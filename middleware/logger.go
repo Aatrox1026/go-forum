@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"kevinku/go-forum/config"
 	"net"
 	"net/http"
@@ -19,17 +20,16 @@ import (
 var Logger *zap.Logger
 
 func init() {
-	var writeSyncer = getWriteSyncer()
-	var encoder = getEncoder()
-	var level = new(zapcore.Level)
-
-	var core = zapcore.NewCore(encoder, writeSyncer, level)
+	var core = zapcore.NewTee(
+		zapcore.NewCore(getEncoder(), getWriteSyncer(config.Cfg.LogFile.AccessLogPath), zap.DebugLevel),
+		zapcore.NewCore(getEncoder(), getWriteSyncer(config.Cfg.LogFile.ErrorLogPath), zap.ErrorLevel),
+	)
 	Logger = zap.New(core, zap.AddCaller())
 }
 
-func getWriteSyncer() (writeSyncer zapcore.WriteSyncer) {
+func getWriteSyncer(path string) (writeSyncer zapcore.WriteSyncer) {
 	var logger = &lumberjack.Logger{
-		Filename: config.Cfg.LogFile.Path,
+		Filename: path,
 		MaxSize:  config.Cfg.LogFile.MaxSize,
 	}
 	return zapcore.AddSync(logger)
@@ -39,33 +39,37 @@ func getEncoder() (encoder zapcore.Encoder) {
 	var encoderConfig = zap.NewDevelopmentEncoderConfig()
 	encoderConfig.EncodeDuration = zapcore.SecondsDurationEncoder
 
-	return zapcore.NewJSONEncoder(encoderConfig)
+	return zapcore.NewConsoleEncoder(encoderConfig)
 }
 
 func GinLogger(logger *zap.Logger) (handler gin.HandlerFunc) {
 	return func(ctx *gin.Context) {
-		var start = time.Now()
-		var path = ctx.Request.URL.Path
-		var query = ctx.Request.URL.RawQuery
-		ctx.Next()
+		var loggerWithoutCaller *zap.Logger = zap.New(logger.Core())
 
+		var start = time.Now()
+		ctx.Next()
 		var cost = time.Since(start)
-		logger.Sugar().Info(
-			path,
-			"status", ctx.Writer.Status(),
-			"method", ctx.Request.Method,
-			"path", path,
-			"query", query,
-			"ip", ctx.ClientIP(),
-			"user-agent", ctx.Request.UserAgent(),
-			"errors", ctx.Errors.ByType(gin.ErrorTypePrivate).String(),
-			"cost", cost,
+
+		var output = fmt.Sprintf("| %3d | %13s | %15s | %-8s %s",
+			ctx.Writer.Status(),
+			cost,
+			ctx.ClientIP(),
+			ctx.Request.Method,
+			ctx.Request.URL.Path)
+
+		loggerWithoutCaller.Info(
+			output,
+			zap.String("query", ctx.Request.URL.RawQuery),
+			zap.String("user-agent", ctx.Request.UserAgent()),
+			zap.String("errors", ctx.Errors.ByType(gin.ErrorTypePrivate).String()),
 		)
 	}
 }
 
 func GinRecovery(logger *zap.Logger, stack bool) (handler gin.HandlerFunc) {
 	return func(ctx *gin.Context) {
+		var loggerWithoutCaller *zap.Logger = zap.New(logger.Core())
+
 		defer func() {
 			if err := recover(); err != nil {
 				var brokenPipe bool
@@ -91,17 +95,17 @@ func GinRecovery(logger *zap.Logger, stack bool) (handler gin.HandlerFunc) {
 				}
 
 				if stack {
-					logger.Sugar().Error(
+					loggerWithoutCaller.Error(
 						"[Recovery from panic]",
-						"error", err,
-						"request", string(request),
-						"stack", string(debug.Stack()),
+						zap.Any("error", err),
+						zap.String("request", string(request)),
+						zap.String("stack", string(debug.Stack())),
 					)
 				} else {
-					logger.Sugar().Error(
+					loggerWithoutCaller.Error(
 						"[Recovery from panic]",
-						"error", err,
-						"request", string(request),
+						zap.Any("error", err),
+						zap.String("request", string(request)),
 					)
 				}
 				ctx.AbortWithStatus(http.StatusInternalServerError)

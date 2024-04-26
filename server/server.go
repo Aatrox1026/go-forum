@@ -19,6 +19,8 @@ func NewServer() (server *Server) {
 		middleware.GinRecovery(middleware.Logger, true),
 	)
 
+	Route(engine)
+
 	return &Server{
 		engine: engine,
 	}
@@ -27,13 +29,17 @@ func NewServer() (server *Server) {
 func Route(ginServer *gin.Engine) {
 	ginServer.GET("doc/*any", ginswagger.WrapHandler(swaggerFiles.Handler))
 
+	var auth = ginServer.Group("/auth")
+	{
+		auth.POST("/login")
+	}
+
 	var api = ginServer.Group("/api")
 	{
 		api.GET("/ping")
-		// 	var v1 = api.Group("/v1")
-		// 	{
-
-		// 	}
+		// var v1 = api.Group("/v1")
+		// {
+		// }
 	}
 }
 

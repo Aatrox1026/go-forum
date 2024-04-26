@@ -1,0 +1,7 @@
+logFile: 
+  accessLogPath: "./access.log"
+  errorLogPath: "./error.log"
+  maxSize: 500
+
+jwt:
+  secretKey: "jwt_secret_key"
