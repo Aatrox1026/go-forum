@@ -37,6 +37,7 @@ func getWriteSyncer(path string) (writeSyncer zapcore.WriteSyncer) {
 
 func getEncoder() (encoder zapcore.Encoder) {
 	var encoderConfig = zap.NewDevelopmentEncoderConfig()
+	encoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout("2006-01-02 15:04:05Z0700")
 	encoderConfig.EncodeDuration = zapcore.SecondsDurationEncoder
 
 	return zapcore.NewConsoleEncoder(encoderConfig)

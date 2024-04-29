@@ -9,6 +9,7 @@ import (
 type Config struct {
 	LogFile *LogFileConfig
 	JWT     *JWTConfig
+	MySQL   *MySQLConfig
 }
 
 type LogFileConfig struct {
@@ -19,6 +20,14 @@ type LogFileConfig struct {
 
 type JWTConfig struct {
 	SecretKey string
+}
+
+type MySQLConfig struct {
+	User     string
+	Password string
+	Host     string
+	Port     int64
+	DB       string
 }
 
 var Cfg *Config
