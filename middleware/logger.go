@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"fmt"
-	"kevinku/go-forum/config"
 	"net"
 	"net/http"
 	"net/http/httputil"
@@ -13,35 +12,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
-	"gopkg.in/natefinch/lumberjack.v2"
 )
-
-var Logger *zap.Logger
-
-func init() {
-	var core = zapcore.NewTee(
-		zapcore.NewCore(getEncoder(), getWriteSyncer(config.Cfg.LogFile.AccessLogPath), zap.DebugLevel),
-		zapcore.NewCore(getEncoder(), getWriteSyncer(config.Cfg.LogFile.ErrorLogPath), zap.ErrorLevel),
-	)
-	Logger = zap.New(core, zap.AddCaller())
-}
-
-func getWriteSyncer(path string) (writeSyncer zapcore.WriteSyncer) {
-	var logger = &lumberjack.Logger{
-		Filename: path,
-		MaxSize:  config.Cfg.LogFile.MaxSize,
-	}
-	return zapcore.AddSync(logger)
-}
-
-func getEncoder() (encoder zapcore.Encoder) {
-	var encoderConfig = zap.NewDevelopmentEncoderConfig()
-	encoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout("2006-01-02 15:04:05Z0700")
-	encoderConfig.EncodeDuration = zapcore.SecondsDurationEncoder
-
-	return zapcore.NewConsoleEncoder(encoderConfig)
-}
 
 func GinLogger(logger *zap.Logger) (handler gin.HandlerFunc) {
 	return func(ctx *gin.Context) {

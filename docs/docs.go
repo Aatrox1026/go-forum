@@ -24,17 +24,17 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "waf"
+                    "auth"
                 ],
-                "summary": "create host",
+                "summary": "user sign up",
                 "parameters": [
                     {
-                        "description": "request data",
+                        "description": "registration data",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.User"
+                            "$ref": "#/definitions/model.Registration"
                         }
                     }
                 ],
@@ -62,40 +62,16 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "gorm.DeletedAt": {
+        "model.Registration": {
             "type": "object",
             "properties": {
-                "time": {
+                "confirm": {
                     "type": "string"
-                },
-                "valid": {
-                    "description": "Valid is true if Time is not NULL",
-                    "type": "boolean"
-                }
-            }
-        },
-        "model.User": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "name": {
                     "type": "string"
                 },
                 "passwd": {
-                    "type": "string"
-                },
-                "role": {
-                    "type": "integer"
-                },
-                "updatedAt": {
                     "type": "string"
                 }
             }

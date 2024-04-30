@@ -2,8 +2,11 @@ package database
 
 import (
 	"fmt"
+	"kevinku/go-forum/app/model"
 	. "kevinku/go-forum/config"
+	. "kevinku/go-forum/lib/logger"
 
+	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -11,6 +14,7 @@ import (
 var DB *gorm.DB
 
 func init() {
+	var err error
 	var dsn string = fmt.Sprintf(
 		"%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=true&loc=Local",
 		Cfg.MySQL.User,
@@ -20,8 +24,13 @@ func init() {
 		Cfg.MySQL.DB,
 	)
 
-	var err error
+	// connect to database
 	if DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{}); err != nil {
-		panic(fmt.Errorf("connect to database failed: %v", err))
+		Logger.Panic(
+			"connect to database failed",
+			zap.Any("error", err))
 	}
+
+	// migrate tables from models
+	DB.Table("user").AutoMigrate(&model.User{})
 }

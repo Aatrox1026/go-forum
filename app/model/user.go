@@ -7,8 +7,9 @@ const (
 )
 
 type User struct {
-	gorm.Model
+	ID     int64 `gorm:"primaryKey;autoIncrement:false"`
 	Name   string
 	Passwd string
 	Role   int64
+	gorm.Model
 }

@@ -3,6 +3,7 @@ package server
 import (
 	"kevinku/go-forum/app/controller"
 	"kevinku/go-forum/docs"
+	. "kevinku/go-forum/lib/logger"
 	"kevinku/go-forum/middleware"
 
 	"github.com/gin-gonic/gin"
@@ -17,8 +18,8 @@ type Server struct {
 func NewServer() (server *Server) {
 	var engine = gin.New()
 	engine.Use(
-		middleware.GinLogger(middleware.Logger),
-		middleware.GinRecovery(middleware.Logger, true),
+		middleware.GinLogger(Logger),
+		middleware.GinRecovery(Logger, true),
 	)
 
 	Route(engine)
@@ -29,7 +30,7 @@ func NewServer() (server *Server) {
 }
 
 func Route(ginServer *gin.Engine) {
-	docs.SwaggerInfo.BasePath = "/api/v1"
+	docs.SwaggerInfo.BasePath = ""
 	ginServer.GET("doc/*any", ginswagger.WrapHandler(swaggerFiles.Handler))
 
 	var api = ginServer.Group("/api")
@@ -38,7 +39,7 @@ func Route(ginServer *gin.Engine) {
 		{
 			var auth = ginServer.Group("/auth")
 			{
-				auth.POST("/sign-up", controller.SignUp)
+				auth.POST("/sign-up", controller.Register)
 				auth.POST("/login")
 			}
 

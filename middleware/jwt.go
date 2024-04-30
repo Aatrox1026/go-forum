@@ -3,6 +3,7 @@ package middleware
 import (
 	"kevinku/go-forum/app/model"
 	"kevinku/go-forum/config"
+	. "kevinku/go-forum/lib/logger"
 	"time"
 
 	ginjwt "github.com/appleboy/gin-jwt/v2"
