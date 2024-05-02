@@ -11,7 +11,7 @@ definitions:
 info:
   contact: {}
 paths:
-  /v1/waf/host:
+  /api/v1/auth/sign-up:
     post:
       consumes:
       - application/json
@@ -33,8 +33,8 @@ paths:
           description: Bad Request
           schema:
             type: string
-        "500":
-          description: Internal Server Error
+        "422":
+          description: Unprocessable Entity
           schema:
             type: string
       summary: user sign up

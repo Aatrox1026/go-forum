@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "kevinku/go-forum/docs"
 	serverpkg "kevinku/go-forum/server"
 )
 

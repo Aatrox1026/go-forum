@@ -1,11 +1,17 @@
 package controller
 
 import (
-	. "kevinku/go-forum/lib/logger"
+	"fmt"
+	l "kevinku/go-forum/lib/logger"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
+
+type Json = map[string]any
+
+var f = fmt.Sprintf
+var logger = l.Logger
 
 func HandleResponse(ctx *gin.Context, statusCode int, data any) {
 	switch statusType := statusCode / 100; statusType {
@@ -17,10 +23,10 @@ func HandleResponse(ctx *gin.Context, statusCode int, data any) {
 	case 4, 5:
 		ctx.AbortWithStatusJSON(
 			statusCode,
-			data,
+			Json{"msg": data.(error).Error()},
 		)
 	default:
-		Logger.Error(
+		logger.Error(
 			"invalid status code",
 			zap.Int("code", statusCode))
 	}

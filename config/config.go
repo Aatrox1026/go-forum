@@ -10,6 +10,7 @@ type Config struct {
 	LogFile *LogFileConfig
 	JWT     *JWTConfig
 	MySQL   *MySQLConfig
+	Redis   *RedisConfig
 }
 
 type LogFileConfig struct {
@@ -23,11 +24,18 @@ type JWTConfig struct {
 }
 
 type MySQLConfig struct {
+	Host     string
+	Port     int
 	User     string
 	Password string
-	Host     string
-	Port     int64
 	DB       string
+}
+
+type RedisConfig struct {
+	Host     string
+	Port     int
+	Password string
+	DB       int
 }
 
 var Cfg *Config

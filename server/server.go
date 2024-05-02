@@ -2,7 +2,6 @@ package server
 
 import (
 	"kevinku/go-forum/app/controller"
-	"kevinku/go-forum/docs"
 	. "kevinku/go-forum/lib/logger"
 	"kevinku/go-forum/middleware"
 
@@ -30,14 +29,13 @@ func NewServer() (server *Server) {
 }
 
 func Route(ginServer *gin.Engine) {
-	docs.SwaggerInfo.BasePath = ""
 	ginServer.GET("doc/*any", ginswagger.WrapHandler(swaggerFiles.Handler))
 
 	var api = ginServer.Group("/api")
 	{
 		var v1 = api.Group("/v1")
 		{
-			var auth = ginServer.Group("/auth")
+			var auth = v1.Group("/auth")
 			{
 				auth.POST("/sign-up", controller.Register)
 				auth.POST("/login")

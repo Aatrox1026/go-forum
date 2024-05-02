@@ -1,11 +1,13 @@
 package controller
 
 import (
+	"fmt"
 	"kevinku/go-forum/app/model"
 	"kevinku/go-forum/app/service"
-	"kevinku/go-forum/database"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 // User Sign Up
@@ -16,14 +18,24 @@ import (
 // @Produce json
 // @Success 200 {object} string
 // @Failure 400 {object} string
-// @Failure 500 {object} string
-// @Router /v1/waf/host [post]
+// @Failure 422 {object} string
+// @Router /api/v1/auth/sign-up [post]
 func Register(ctx *gin.Context) {
-	_ = database.DB
+	var err error
+	var resp *service.Response
 
 	var registration = new(model.Registration)
-	ctx.ShouldBindJSON(registration)
+	if err = ctx.ShouldBindJSON(registration); err != nil {
+		logger.Error(
+			"invalid request body",
+			zap.Any("error", err))
+		HandleResponse(ctx, http.StatusUnprocessableEntity, fmt.Errorf("invalid request body: %v", err))
+		return
+	}
 
-	service.Register()
-
+	if resp = service.Register(registration); resp != nil {
+		HandleResponse(ctx, resp.StatusCode, resp.Error)
+		return
+	}
+	HandleResponse(ctx, resp.StatusCode, resp.Data)
 }
