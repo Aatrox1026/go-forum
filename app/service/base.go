@@ -13,6 +13,7 @@ const (
 )
 
 var f = fmt.Sprintf
+var errorf = fmt.Errorf
 var db = database.DB
 var rdb = database.RDB
 var logger = l.Logger
