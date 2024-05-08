@@ -22,11 +22,15 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.Registration'
+      - description: test query param
+        in: query
+        name: test
+        type: string
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             type: string
         "400":

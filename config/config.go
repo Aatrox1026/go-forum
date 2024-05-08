@@ -40,7 +40,7 @@ type RedisConfig struct {
 
 var Cfg *Config
 
-func init() {
+func Init() {
 	var err error
 	viper.SetConfigFile("./config.yaml")
 	if err = viper.ReadInConfig(); err != nil {

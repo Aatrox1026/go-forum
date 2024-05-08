@@ -12,8 +12,8 @@ import (
 func Register(registration *model.Registration) (resp *Response) {
 	var result *gorm.DB
 	// check if username exists
-	var user model.User
-	if result = db.Table("user").Where("name = ?", registration.Name).First(&user); result.Error == nil {
+	var user *model.User
+	if result = db.Table("user").Where("name = ?", registration.Name).First(user); result.Error == nil {
 		// username already exists
 		logger.Error("username already failed", zap.String("username", registration.Name))
 		return &Response{StatusCode: http.StatusUnprocessableEntity, Error: errorf("username %s already exists", registration.Name)}
@@ -29,5 +29,11 @@ func Register(registration *model.Registration) (resp *Response) {
 		return &Response{StatusCode: http.StatusBadRequest, Error: errorf("confirm doesn't matches password")}
 	}
 
-	return &Response{StatusCode: http.StatusOK}
+	user = &model.User{
+		// ID: NewSnowflakeID(),
+	}
+
+	// db.Table("user").Create()
+
+	return &Response{StatusCode: http.StatusCreated}
 }

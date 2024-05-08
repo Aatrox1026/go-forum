@@ -10,10 +10,14 @@ import (
 
 var Logger *zap.Logger
 
-func init() {
+var cfg *config.Config
+
+func Init() {
+	cfg = config.Cfg
+
 	var core = zapcore.NewTee(
-		zapcore.NewCore(getEncoder(), getWriteSyncer(config.Cfg.LogFile.AccessLogPath), zap.DebugLevel),
-		zapcore.NewCore(getEncoder(), getWriteSyncer(config.Cfg.LogFile.ErrorLogPath), zap.ErrorLevel),
+		zapcore.NewCore(getEncoder(), getWriteSyncer(cfg.LogFile.AccessLogPath), zap.DebugLevel),
+		zapcore.NewCore(getEncoder(), getWriteSyncer(cfg.LogFile.ErrorLogPath), zap.ErrorLevel),
 	)
 	Logger = zap.New(core, zap.AddCaller())
 }
@@ -21,7 +25,7 @@ func init() {
 func getWriteSyncer(path string) (writeSyncer zapcore.WriteSyncer) {
 	var logger = &lumberjack.Logger{
 		Filename: path,
-		MaxSize:  config.Cfg.LogFile.MaxSize,
+		MaxSize:  cfg.LogFile.MaxSize,
 	}
 	return zapcore.AddSync(logger)
 }

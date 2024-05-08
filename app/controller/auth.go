@@ -16,7 +16,7 @@ import (
 // @Accept  json
 // @Param request body model.Registration true "registration data"
 // @Produce json
-// @Success 200 {object} string
+// @Success 201 {object} string
 // @Failure 400 {object} string
 // @Failure 422 {object} string
 // @Router /api/v1/auth/sign-up [post]
@@ -33,7 +33,7 @@ func Register(ctx *gin.Context) {
 		return
 	}
 
-	if resp = service.Register(registration); resp != nil {
+	if resp = service.Register(registration); resp.Error != nil {
 		HandleResponse(ctx, resp.StatusCode, resp.Error)
 		return
 	}

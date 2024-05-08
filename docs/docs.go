@@ -36,11 +36,17 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/model.Registration"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "test query param",
+                        "name": "test",
+                        "in": "query"
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "type": "string"
                         }
