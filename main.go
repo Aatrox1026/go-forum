@@ -17,6 +17,10 @@ func init() {
 	service.Init()
 }
 
+// @securityDefinitions.apikey Bearer
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and JWT token.
 func main() {
 
 	var server = serverpkg.NewServer()
