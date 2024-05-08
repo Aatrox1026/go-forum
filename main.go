@@ -1,6 +1,7 @@
 package main
 
 import (
+	"kevinku/go-forum/app/service"
 	"kevinku/go-forum/config"
 	"kevinku/go-forum/database"
 	_ "kevinku/go-forum/docs"
@@ -12,6 +13,8 @@ func init() {
 	config.Init()
 	lib.Init()
 	database.Init()
+
+	service.Init()
 }
 
 func main() {

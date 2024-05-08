@@ -2,10 +2,13 @@ definitions:
   model.Registration:
     properties:
       confirm:
+        example: PaSsWoRd
         type: string
       name:
+        example: Username
         type: string
-      passwd:
+      password:
+        example: PaSsWoRd
         type: string
     type: object
 info:
@@ -22,10 +25,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/model.Registration'
-      - description: test query param
-        in: query
-        name: test
-        type: string
       produces:
       - application/json
       responses:

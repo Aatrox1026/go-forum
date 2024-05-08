@@ -34,8 +34,8 @@ func Register(ctx *gin.Context) {
 	}
 
 	if resp = service.Register(registration); resp.Error != nil {
-		HandleResponse(ctx, resp.StatusCode, resp.Error)
+		HandleResponse(ctx, resp.Code, resp.Error)
 		return
 	}
-	HandleResponse(ctx, resp.StatusCode, resp.Data)
+	HandleResponse(ctx, resp.Code, resp.Data)
 }
