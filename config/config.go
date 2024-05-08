@@ -9,7 +9,7 @@ import (
 type Config struct {
 	LogFile   *LogFileConfig
 	JWT       *JWTConfig
-	Snoeflake *SnowflakeConfig
+	Snowflake *SnowflakeConfig
 	MySQL     *MySQLConfig
 	Redis     *RedisConfig
 }

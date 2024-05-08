@@ -36,12 +36,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/model.Registration"
                         }
-                    },
-                    {
-                        "type": "string",
-                        "description": "test query param",
-                        "name": "test",
-                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -72,15 +66,26 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "confirm": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "PaSsWoRd"
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Username"
                 },
-                "passwd": {
-                    "type": "string"
+                "password": {
+                    "type": "string",
+                    "example": "PaSsWoRd"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "Bearer": {
+            "description": "Type \"Bearer\" followed by a space and JWT token.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

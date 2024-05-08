@@ -6,6 +6,10 @@ import (
 	"kevinku/go-forum/database"
 	l "kevinku/go-forum/lib/logger"
 	"time"
+
+	"github.com/redis/go-redis/v9"
+	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 const (
@@ -14,14 +18,21 @@ const (
 
 var f = fmt.Sprintf
 var errorf = fmt.Errorf
-var db = database.DB
-var rdb = database.RDB
-var logger = l.Logger
+
+var db *gorm.DB
+var rdb *redis.Client
+var logger *zap.Logger
 
 type Response struct {
-	StatusCode int
-	Data       any
-	Error      error
+	Code  int
+	Data  any
+	Error error
+}
+
+func Init() {
+	db = database.DB
+	rdb = database.RDB
+	logger = l.Logger
 }
 
 func NewContextWithTimeout(timeout time.Duration) (ctx context.Context, cancel context.CancelFunc) {
