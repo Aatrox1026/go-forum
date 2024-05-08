@@ -6,6 +6,10 @@ logFile:
 jwt:
   secretKey: "jwt_secret_key"
 
+snowflake:
+  // machine id between 0 to 1023
+  machineID: 1
+
 mysql:
   host: "localhost"
   port: 3306

@@ -7,10 +7,11 @@ import (
 )
 
 type Config struct {
-	LogFile *LogFileConfig
-	JWT     *JWTConfig
-	MySQL   *MySQLConfig
-	Redis   *RedisConfig
+	LogFile   *LogFileConfig
+	JWT       *JWTConfig
+	Snoeflake *SnowflakeConfig
+	MySQL     *MySQLConfig
+	Redis     *RedisConfig
 }
 
 type LogFileConfig struct {
@@ -21,6 +22,10 @@ type LogFileConfig struct {
 
 type JWTConfig struct {
 	SecretKey string
+}
+
+type SnowflakeConfig struct {
+	MachineID int64
 }
 
 type MySQLConfig struct {
