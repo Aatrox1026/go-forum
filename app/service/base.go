@@ -23,6 +23,7 @@ var db *gorm.DB
 var rdb *redis.Client
 var logger *zap.Logger
 
+type Json = map[string]any
 type Response struct {
 	Code  int
 	Data  any

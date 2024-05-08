@@ -43,7 +43,7 @@ func Route(ginServer *gin.Engine) {
 			var auth = v1.Group("/auth")
 			{
 				auth.POST("/sign-up", controller.Register)
-				auth.POST("/login")
+				auth.POST("/login", controller.Login)
 			}
 
 			var user = v1.Group("/user")

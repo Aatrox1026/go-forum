@@ -40,7 +40,7 @@ paths:
           description: Unprocessable Entity
           schema:
             type: string
-      summary: user sign up
+      summary: user login
       tags:
       - auth
 securityDefinitions:

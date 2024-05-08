@@ -39,3 +39,17 @@ func Register(ctx *gin.Context) {
 	}
 	HandleResponse(ctx, resp.Code, resp.Data)
 }
+
+// User Login
+// @Summary user login
+// @tags auth
+// @Accept  json
+// @Param request body model.Registration true "registration data"
+// @Produce json
+// @Success 201 {object} string
+// @Failure 400 {object} string
+// @Failure 422 {object} string
+// @Router /api/v1/auth/sign-up [post]
+func Login(ctx *gin.Context) {
+
+}

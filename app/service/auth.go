@@ -50,5 +50,5 @@ func Register(registration *model.Registration) (resp *Response) {
 		return &Response{Code: http.StatusBadRequest, Error: errorf("create user failed: %v", err)}
 	}
 
-	return &Response{Code: http.StatusCreated, Data: user.ID}
+	return &Response{Code: http.StatusCreated, Data: Json{"id": user.ID}}
 }

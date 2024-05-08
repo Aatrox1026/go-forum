@@ -26,7 +26,7 @@ const docTemplate = `{
                 "tags": [
                     "auth"
                 ],
-                "summary": "user sign up",
+                "summary": "user login",
                 "parameters": [
                     {
                         "description": "registration data",

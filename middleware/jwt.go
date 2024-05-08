@@ -25,18 +25,20 @@ func JWTMiddleware() (middleware *ginjwt.GinJWTMiddleware) {
 		Timeout:     2 * time.Hour,
 		MaxRefresh:  2 * time.Hour,
 		IdentityKey: identityKey,
-		// PayloadFunc: func(data any) ginjwt.MapClaims {
-		// 	if v, ok := data.(); ok {
-		// 		var claims = ginjwt.MapClaims{
-		// 		}
-		// 	}
-		// },
-		// IdentityHandler: func(ctx *gin.Context) any {
-		// 	var claims = ginjwt.ExtractClaims(ctx)
-		// 	return &model.User{
-		// 		ID: claims[identityKey].(string),
-		// 	}
-		// },
+		PayloadFunc: func(data any) ginjwt.MapClaims {
+			if user, ok := data.(*model.User); ok {
+				return ginjwt.MapClaims{
+					"id": user.ID,
+				}
+			}
+			return ginjwt.MapClaims{}
+		},
+		IdentityHandler: func(ctx *gin.Context) any {
+			var claims = ginjwt.ExtractClaims(ctx)
+			return &model.User{
+				ID: claims[identityKey].(int64),
+			}
+		},
 		// Authenticator: func(c *gin.Context) (any, error) {
 
 		// },
