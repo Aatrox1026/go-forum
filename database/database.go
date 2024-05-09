@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"kevinku/go-forum/app/model"
 	"kevinku/go-forum/config"
+	. "kevinku/go-forum/lib/constant"
 	l "kevinku/go-forum/lib/logger"
 
 	"github.com/redis/go-redis/v9"
@@ -46,8 +47,8 @@ func initMySQL() {
 	logger.Info("Connected to MySQL")
 
 	// migrate tables from models
-	if err = DB.Table("user").AutoMigrate(&model.User{}); err != nil {
-		logger.Panic("auto migrate table \"user\" failed", zap.Any("error", err))
+	if err = DB.Table(TABLE_USER).AutoMigrate(&model.User{}); err != nil {
+		logger.Panic("auto migrate failed", zap.String("table", TABLE_USER), zap.Any("error", err))
 	}
 	logger.Info("MySQL migrate finished")
 }

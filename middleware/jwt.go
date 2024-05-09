@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"kevinku/go-forum/app/model"
+	"kevinku/go-forum/app/service"
 	"kevinku/go-forum/config"
 	. "kevinku/go-forum/lib/logger"
 	"time"
@@ -11,10 +12,17 @@ import (
 	"go.uber.org/zap"
 )
 
-const (
-	identityKey = "id"
-)
+const identityKey string = "id"
 
+// User Login
+// @Summary user login
+// @tags auth
+// @Accept  json
+// @Param request body model.Login true "login data"
+// @Produce json
+// @Success 200 {object} string
+// @Failure 401 {object} string
+// @Router /auth/login [post]
 func JWTMiddleware() (middleware *ginjwt.GinJWTMiddleware) {
 	var err error
 	var authMiddleware *ginjwt.GinJWTMiddleware
@@ -25,21 +33,33 @@ func JWTMiddleware() (middleware *ginjwt.GinJWTMiddleware) {
 		Timeout:     2 * time.Hour,
 		MaxRefresh:  2 * time.Hour,
 		IdentityKey: identityKey,
-		// PayloadFunc: func(data any) ginjwt.MapClaims {
-		// 	if v, ok := data.(); ok {
-		// 		var claims = ginjwt.MapClaims{
-		// 		}
-		// 	}
-		// },
-		// IdentityHandler: func(ctx *gin.Context) any {
-		// 	var claims = ginjwt.ExtractClaims(ctx)
-		// 	return &model.User{
-		// 		ID: claims[identityKey].(string),
-		// 	}
-		// },
-		// Authenticator: func(c *gin.Context) (any, error) {
+		PayloadFunc: func(data any) ginjwt.MapClaims {
+			if user, ok := data.(*model.User); ok {
+				return ginjwt.MapClaims{
+					identityKey: user.ID,
+				}
+			}
+			return ginjwt.MapClaims{}
+		},
+		IdentityHandler: func(ctx *gin.Context) any {
+			var claims = ginjwt.ExtractClaims(ctx)
+			return &model.User{
+				ID: claims[identityKey].(int64),
+			}
+		},
+		Authenticator: func(ctx *gin.Context) (any, error) {
+			var err error
+			var login = &model.Login{}
+			if err = ctx.ShouldBindJSON(login); err != nil {
+				return nil, ginjwt.ErrMissingLoginValues
+			}
 
-		// },
+			var user *model.User
+			if user, err = service.Login(login); err != nil {
+				return nil, ginjwt.ErrFailedAuthentication
+			}
+			return user, nil
+		},
 		Authorizator: func(data any, c *gin.Context) bool {
 			if _, ok := data.(*model.User); ok {
 				return true

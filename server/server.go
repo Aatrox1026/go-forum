@@ -36,15 +36,18 @@ func NewServer() (server *Server) {
 func Route(ginServer *gin.Engine) {
 	ginServer.GET("doc/*any", ginswagger.WrapHandler(swaggerFiles.Handler))
 
-	var api = ginServer.Group("/api")
+	var auth = ginServer.Group("/auth")
+	{
+		auth.POST("/sign-up", controller.Register)
+		auth.POST("/login", middleware.JWTMiddleware().LoginHandler)
+	}
+
+	var api = ginServer.Group("/api", middleware.JWTMiddleware().MiddlewareFunc())
 	{
 		var v1 = api.Group("/v1")
 		{
-			var auth = v1.Group("/auth")
-			{
-				auth.POST("/sign-up", controller.Register)
-				auth.POST("/login")
-			}
+
+			v1.GET("/test", func(ctx *gin.Context) { ctx.JSON(200, "ok") })
 
 			var user = v1.Group("/user")
 			{

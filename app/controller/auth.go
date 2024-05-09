@@ -19,7 +19,7 @@ import (
 // @Success 201 {object} string
 // @Failure 400 {object} string
 // @Failure 422 {object} string
-// @Router /api/v1/auth/sign-up [post]
+// @Router /auth/sign-up [post]
 func Register(ctx *gin.Context) {
 	var err error
 	var resp *service.Response

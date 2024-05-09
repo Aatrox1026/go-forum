@@ -1,4 +1,13 @@
 definitions:
+  model.Login:
+    properties:
+      name:
+        example: Username
+        type: string
+      password:
+        example: PaSsWoRd
+        type: string
+    type: object
   model.Registration:
     properties:
       confirm:
@@ -14,7 +23,36 @@ definitions:
 info:
   contact: {}
 paths:
-  /api/v1/auth/sign-up:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: login data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.Login'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "422":
+          description: Unprocessable Entity
+          schema:
+            type: string
+      summary: user login
+      tags:
+      - auth
+  /auth/sign-up:
     post:
       consumes:
       - application/json

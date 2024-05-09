@@ -12,9 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
-const (
-	TIMEOUT time.Duration = 10 * time.Second
-)
+const TIMEOUT time.Duration = 10 * time.Second
 
 var f = fmt.Sprintf
 var errorf = fmt.Errorf
@@ -23,6 +21,7 @@ var db *gorm.DB
 var rdb *redis.Client
 var logger *zap.Logger
 
+type Json = map[string]any
 type Response struct {
 	Code  int
 	Data  any

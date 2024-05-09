@@ -3,9 +3,11 @@ package service
 import (
 	"errors"
 	"kevinku/go-forum/app/model"
+	. "kevinku/go-forum/lib/constant"
 	"kevinku/go-forum/lib/snowflake"
 	"net/http"
 
+	ginjwt "github.com/appleboy/gin-jwt/v2"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -15,7 +17,7 @@ func Register(registration *model.Registration) (resp *Response) {
 	var err error
 	// check if username exists
 	var user *model.User = new(model.User)
-	if err = db.Table("user").Where("name = ?", registration.Name).First(user).Error; err == nil {
+	if err = db.Table(TABLE_USER).Where("name = ?", registration.Name).First(user).Error; err == nil {
 		// username already exists
 		logger.Info("username already exists", zap.String("username", registration.Name))
 		return &Response{Code: http.StatusUnprocessableEntity, Error: errorf("username %s already exists", registration.Name)}
@@ -50,5 +52,20 @@ func Register(registration *model.Registration) (resp *Response) {
 		return &Response{Code: http.StatusBadRequest, Error: errorf("create user failed: %v", err)}
 	}
 
-	return &Response{Code: http.StatusCreated, Data: user.ID}
+	return &Response{Code: http.StatusCreated, Data: Json{"id": user.ID}}
+}
+
+func Login(login *model.Login) (user *model.User, err error) {
+	user = new(model.User)
+	if err = db.Table(TABLE_USER).Where("name = ?", login.Name).First(user).Error; err != nil {
+		logger.Error("get user by name failed", zap.String("name", login.Name), zap.Any("error", err))
+		return nil, ginjwt.ErrFailedAuthentication
+	}
+
+	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(login.Password)); err != nil {
+		logger.Error("compare password failed", zap.String("name", login.Name), zap.Any("error", err))
+		return nil, ginjwt.ErrFailedAuthentication
+	}
+
+	return user, nil
 }
