@@ -70,8 +70,8 @@ func GinRecovery(logger *zap.Logger, stack bool) (handler gin.HandlerFunc) {
 					loggerWithoutCaller.Error(
 						"[Recovery from panic]",
 						zap.Any("error", err),
-						zap.String("request", string(request)),
 						zap.String("stack", string(debug.Stack())),
+						zap.String("request", string(request)),
 					)
 				} else {
 					loggerWithoutCaller.Error(

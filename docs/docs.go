@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/auth/sign-up": {
+        "/auth/login": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -27,6 +27,51 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "user login",
+                "parameters": [
+                    {
+                        "description": "login data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Login"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/sign-up": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "user sign up",
                 "parameters": [
                     {
                         "description": "registration data",
@@ -62,6 +107,19 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "model.Login": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Username"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "PaSsWoRd"
+                }
+            }
+        },
         "model.Registration": {
             "type": "object",
             "properties": {
