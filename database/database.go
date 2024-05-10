@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"kevinku/go-forum/app/model"
 	"kevinku/go-forum/config"
-	. "kevinku/go-forum/lib/constant"
 	l "kevinku/go-forum/lib/logger"
 
 	"github.com/redis/go-redis/v9"
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 )
 
 var DB *gorm.DB
@@ -39,17 +39,16 @@ func initMySQL() {
 	)
 
 	// connect to database
-	if DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{}); err != nil {
+	if DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
+		NamingStrategy: schema.NamingStrategy{SingularTable: true},
+	}); err != nil {
 		logger.Panic(
 			"connect to database failed",
 			zap.Any("error", err))
 	}
 	logger.Info("Connected to MySQL")
 
-	// migrate tables from models
-	if err = DB.Table(TABLE_USER).AutoMigrate(&model.User{}); err != nil {
-		logger.Panic("auto migrate failed", zap.String("table", TABLE_USER), zap.Any("error", err))
-	}
+	DB.AutoMigrate(&model.User{})
 	logger.Info("MySQL migrate finished")
 }
 
