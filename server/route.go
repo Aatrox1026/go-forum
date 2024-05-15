@@ -22,7 +22,7 @@ func Route(ginServer *gin.Engine) {
 	{
 		var v1 = api.Group("/v1")
 		{
-			// v1.GET("/test", middleware.PermissionCheck(1))
+			v1.GET("/test", middleware.PermissionCheck(1))
 
 			var user = v1.Group("/user")
 			{

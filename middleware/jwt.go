@@ -5,6 +5,7 @@ import (
 	"kevinku/go-forum/app/service"
 	"kevinku/go-forum/config"
 	. "kevinku/go-forum/lib/logger"
+	"strconv"
 	"time"
 
 	ginjwt "github.com/appleboy/gin-jwt/v2"
@@ -36,15 +37,16 @@ func JWTMiddleware() (middleware *ginjwt.GinJWTMiddleware) {
 		PayloadFunc: func(data any) ginjwt.MapClaims {
 			if user, ok := data.(*model.User); ok {
 				return ginjwt.MapClaims{
-					identityKey: user.ID,
+					identityKey: strconv.FormatInt(user.ID, 10),
 				}
 			}
 			return ginjwt.MapClaims{}
 		},
 		IdentityHandler: func(ctx *gin.Context) any {
 			var claims = ginjwt.ExtractClaims(ctx)
+			id, _ := strconv.ParseInt(claims[identityKey].(string), 10, 64)
 			return &model.User{
-				ID: claims[identityKey].(int64),
+				ID: id,
 			}
 		},
 		Authenticator: func(ctx *gin.Context) (any, error) {
