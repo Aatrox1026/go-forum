@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"kevinku/go-forum/database"
 	l "kevinku/go-forum/lib/logger"
+	"kevinku/go-forum/lib/redis"
 	"time"
 
-	"github.com/redis/go-redis/v9"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
@@ -30,7 +30,9 @@ type Response struct {
 
 func Init() {
 	db = database.DB
-	rdb = database.RDB
+	rdb = &redis.Client{
+		Client: *database.RDB,
+	}
 	logger = l.Logger
 }
 

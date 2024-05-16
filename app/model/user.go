@@ -9,10 +9,11 @@ const (
 )
 
 type User struct {
-	ID       int64  `json:"id" gorm:"primaryKey;autoIncrement:false"`
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Password string `json:"-"`
+	ID    int64  `json:"id" gorm:"primaryKey;autoIncrement:false"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+	// Password string `json:"-"`
+	Password string `json:"password,omitempty"`
 	Role     int64  `json:"role"`
 	gorm.Model
 }
