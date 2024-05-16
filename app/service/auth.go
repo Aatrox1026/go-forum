@@ -3,7 +3,6 @@ package service
 import (
 	"errors"
 	"kevinku/go-forum/app/model"
-	. "kevinku/go-forum/lib/constant"
 	"kevinku/go-forum/lib/snowflake"
 	"net/http"
 
@@ -17,7 +16,7 @@ func Register(registration *model.Registration) (resp *Response) {
 	var err error
 	// check if username exists
 	var user *model.User = new(model.User)
-	if err = db.Table(TABLE_USER).Where("name = ?", registration.Name).First(user).Error; err == nil {
+	if err = db.Where("name = ?", registration.Name).First(user).Error; err == nil {
 		// username already exists
 		logger.Info("username already exists", zap.String("username", registration.Name))
 		return &Response{Code: http.StatusUnprocessableEntity, Error: errorf("username %s already exists", registration.Name)}
@@ -43,11 +42,12 @@ func Register(registration *model.Registration) (resp *Response) {
 	user = &model.User{
 		ID:       snowflake.NewID(),
 		Name:     registration.Name,
+		Email:    registration.Email,
 		Password: string(hashed),
 		Role:     model.ROLE_NORMAL,
 	}
 
-	if err = db.Table("user").Create(user).Error; err != nil {
+	if err = db.Create(user).Error; err != nil {
 		logger.Error("create user failed", zap.Any("error", err))
 		return &Response{Code: http.StatusBadRequest, Error: errorf("create user failed: %v", err)}
 	}
@@ -57,13 +57,13 @@ func Register(registration *model.Registration) (resp *Response) {
 
 func Login(login *model.Login) (user *model.User, err error) {
 	user = new(model.User)
-	if err = db.Table(TABLE_USER).Where("name = ?", login.Name).First(user).Error; err != nil {
-		logger.Error("get user by name failed", zap.String("name", login.Name), zap.Any("error", err))
+	if err = db.Where("email = ?", login.Email).First(user).Error; err != nil {
+		logger.Error("get user by name failed", zap.String("name", login.Email), zap.Any("error", err))
 		return nil, ginjwt.ErrFailedAuthentication
 	}
 
 	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(login.Password)); err != nil {
-		logger.Error("compare password failed", zap.String("name", login.Name), zap.Any("error", err))
+		logger.Error("compare password failed", zap.String("name", login.Email), zap.Any("error", err))
 		return nil, ginjwt.ErrFailedAuthentication
 	}
 
