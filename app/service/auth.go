@@ -20,7 +20,8 @@ func Register(registration *model.Registration) (resp *Response) {
 		// username already exists
 		logger.Info("username already exists", zap.String("username", registration.Name))
 		return &Response{Code: http.StatusUnprocessableEntity, Error: errorf("username %s already exists", registration.Name)}
-	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+	}
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		// other errors
 		logger.Error("get user failed", zap.Any("error", err))
 		return &Response{Code: http.StatusBadRequest, Error: errorf("get user failed: %v", err)}

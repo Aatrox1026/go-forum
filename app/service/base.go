@@ -12,7 +12,10 @@ import (
 	"gorm.io/gorm"
 )
 
-const TIMEOUT time.Duration = 10 * time.Second
+const (
+	TIMEOUT   time.Duration = 10 * time.Second
+	REDIS_TTL time.Duration = 60 * time.Second
+)
 
 var f = fmt.Sprintf
 var errorf = fmt.Errorf

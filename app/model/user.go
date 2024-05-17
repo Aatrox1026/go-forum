@@ -17,3 +17,7 @@ type User struct {
 	Role     int64  `json:"role"`
 	gorm.Model
 }
+
+func (user *User) UnsetPassword() {
+	user.Password = ""
+}

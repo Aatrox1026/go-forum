@@ -104,9 +104,9 @@ const docTemplate = `{
         "model.Login": {
             "type": "object",
             "properties": {
-                "name": {
+                "email": {
                     "type": "string",
-                    "example": "Username"
+                    "example": "user@example.com"
                 },
                 "password": {
                     "type": "string",
@@ -120,6 +120,10 @@ const docTemplate = `{
                 "confirm": {
                     "type": "string",
                     "example": "PaSsWoRd"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "user@example.com"
                 },
                 "name": {
                     "type": "string",

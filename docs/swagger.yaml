@@ -1,8 +1,8 @@
 definitions:
   model.Login:
     properties:
-      name:
-        example: Username
+      email:
+        example: user@example.com
         type: string
       password:
         example: PaSsWoRd
@@ -12,6 +12,9 @@ definitions:
     properties:
       confirm:
         example: PaSsWoRd
+        type: string
+      email:
+        example: user@example.com
         type: string
       name:
         example: Username
