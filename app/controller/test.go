@@ -15,5 +15,5 @@ import (
 // @Failure 400 {object} string
 // @Router /api/v1/test [get]
 func Test() gin.HandlerFunc {
-	return middleware.PermissionCheck(3)
+	return middleware.PermissionCheck(1)
 }

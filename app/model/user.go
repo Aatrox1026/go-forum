@@ -18,6 +18,9 @@ type User struct {
 	gorm.Model
 }
 
-func (user *User) UnsetPassword() {
-	user.Password = ""
+func (user *User) Safe() (safe *User) {
+	safe = new(User)
+	*safe = *user
+	safe.Password = ""
+	return safe
 }

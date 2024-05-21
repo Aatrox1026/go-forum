@@ -15,8 +15,7 @@ func GetUserByID(id int64) (user *model.User, err error) {
 	user = new(model.User)
 	// try to get data from cache db
 	if err = rdb.Get(ctx, f("user_%d", id), user); err == nil {
-		user.Password = ""
-		return user, nil
+		return user.Safe(), nil
 	}
 	if !errors.Is(err, redis.Nil) {
 		logger.Info("get user from redis failed", zap.Any("error", err))
@@ -40,5 +39,5 @@ func GetUserByID(id int64) (user *model.User, err error) {
 	}
 	logger.Info("set user to redis", zap.String("key", f("user_%d", id)))
 
-	return user, nil
+	return user.Safe(), nil
 }
