@@ -5,14 +5,17 @@ import (
 	"fmt"
 	"kevinku/go-forum/database"
 	l "kevinku/go-forum/lib/logger"
+	"kevinku/go-forum/lib/redis"
 	"time"
 
-	"github.com/redis/go-redis/v9"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
-const TIMEOUT time.Duration = 10 * time.Second
+const (
+	TIMEOUT   time.Duration = 10 * time.Second
+	REDIS_TTL time.Duration = 60 * time.Second
+)
 
 var f = fmt.Sprintf
 var errorf = fmt.Errorf
@@ -30,7 +33,9 @@ type Response struct {
 
 func Init() {
 	db = database.DB
-	rdb = database.RDB
+	rdb = &redis.Client{
+		Client: *database.RDB,
+	}
 	logger = l.Logger
 }
 

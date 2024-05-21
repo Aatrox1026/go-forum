@@ -1,8 +1,8 @@
 definitions:
   model.Login:
     properties:
-      name:
-        example: Username
+      email:
+        example: user@example.com
         type: string
       password:
         example: PaSsWoRd
@@ -12,6 +12,9 @@ definitions:
     properties:
       confirm:
         example: PaSsWoRd
+        type: string
+      email:
+        example: user@example.com
         type: string
       name:
         example: Username
@@ -23,6 +26,24 @@ definitions:
 info:
   contact: {}
 paths:
+  /api/v1/test:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - JWT: []
+      summary: api test
+      tags:
+      - test
   /auth/login:
     post:
       consumes:
@@ -78,7 +99,7 @@ paths:
       tags:
       - auth
 securityDefinitions:
-  Bearer:
+  JWT:
     description: Type "Bearer" followed by a space and JWT token.
     in: header
     name: Authorization

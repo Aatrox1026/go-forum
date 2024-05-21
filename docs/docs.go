@@ -15,6 +15,36 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/test": {
+            "get": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "test"
+                ],
+                "summary": "api test",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/login": {
             "post": {
                 "consumes": [
@@ -104,9 +134,9 @@ const docTemplate = `{
         "model.Login": {
             "type": "object",
             "properties": {
-                "name": {
+                "email": {
                     "type": "string",
-                    "example": "Username"
+                    "example": "user@example.com"
                 },
                 "password": {
                     "type": "string",
@@ -121,6 +151,10 @@ const docTemplate = `{
                     "type": "string",
                     "example": "PaSsWoRd"
                 },
+                "email": {
+                    "type": "string",
+                    "example": "user@example.com"
+                },
                 "name": {
                     "type": "string",
                     "example": "Username"
@@ -133,7 +167,7 @@ const docTemplate = `{
         }
     },
     "securityDefinitions": {
-        "Bearer": {
+        "JWT": {
             "description": "Type \"Bearer\" followed by a space and JWT token.",
             "type": "apiKey",
             "name": "Authorization",
