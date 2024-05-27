@@ -22,11 +22,11 @@ func PermissionCheck(role int64) (handler gin.HandlerFunc) {
 
 		if result, err = roleCheck(claims, role); err != nil {
 			Logger.Error("role check failed", zap.Any("error", err))
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"error": fmt.Errorf("role check failed: %v", err)})
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, map[string]any{"error": fmt.Sprintf("role check failed: %v", err)})
 			return
 		}
 		if !result {
-			ctx.AbortWithStatusJSON(http.StatusForbidden, map[string]any{"error": fmt.Errorf("permission denied")})
+			ctx.AbortWithStatusJSON(http.StatusForbidden, map[string]any{"error": "permission denied"})
 			return
 		}
 	}
@@ -42,7 +42,7 @@ func roleCheck(claims ginjwt.MapClaims, role int64) (result bool, err error) {
 	}
 
 	var user *model.User = new(model.User)
-	if user, err = service.GetUserByID(id); err != nil {
+	if _, user, err = service.GetUserByID(id); err != nil {
 		return false, err
 	}
 

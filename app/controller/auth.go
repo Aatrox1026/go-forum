@@ -22,7 +22,8 @@ import (
 // @Router /auth/sign-up [post]
 func Register(ctx *gin.Context) {
 	var err error
-	var resp *service.Response
+	var code int
+	var data Json
 
 	var registration = new(model.Registration)
 	if err = ctx.ShouldBindJSON(registration); err != nil {
@@ -33,9 +34,9 @@ func Register(ctx *gin.Context) {
 		return
 	}
 
-	if resp = service.Register(registration); resp.Error != nil {
-		HandleResponse(ctx, resp.Code, resp.Error)
+	if code, data, err = service.Register(registration); err != nil {
+		HandleResponse(ctx, code, err)
 		return
 	}
-	HandleResponse(ctx, resp.Code, resp.Data)
+	HandleResponse(ctx, code, data)
 }

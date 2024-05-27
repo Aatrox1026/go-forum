@@ -2,6 +2,7 @@ package server
 
 import (
 	"kevinku/go-forum/app/controller"
+	"kevinku/go-forum/app/model"
 	"kevinku/go-forum/middleware"
 
 	"github.com/gin-gonic/gin"
@@ -24,9 +25,10 @@ func Route(ginServer *gin.Engine) {
 		{
 			v1.GET("/test", controller.Test())
 
-			var user = v1.Group("/user")
+			var user = v1.Group("/users")
 			{
-				user.GET("")
+				user.GET("", middleware.PermissionCheck(model.ROLE_ADMINISTRATOR), controller.GetUsers)
+				user.GET("/:id", controller.GetUserByID)
 			}
 		}
 	}

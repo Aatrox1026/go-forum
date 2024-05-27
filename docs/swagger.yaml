@@ -23,6 +23,23 @@ definitions:
         example: PaSsWoRd
         type: string
     type: object
+  model.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      password:
+        type: string
+      role:
+        type: integer
+      updated_at:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
@@ -44,6 +61,58 @@ paths:
       summary: api test
       tags:
       - test
+  /api/v1/users:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.User'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - JWT: []
+      summary: get all users
+      tags:
+      - user
+  /api/v1/users/{id}:
+    get:
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - JWT: []
+      summary: user sign up
+      tags:
+      - user
   /auth/login:
     post:
       consumes:
