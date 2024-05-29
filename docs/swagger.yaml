@@ -29,6 +29,8 @@ definitions:
         type: string
       email:
         type: string
+      enabled:
+        type: boolean
       id:
         type: integer
       name:
@@ -110,7 +112,33 @@ paths:
             type: string
       security:
       - JWT: []
-      summary: user sign up
+      summary: get user by id
+      tags:
+      - user
+  /api/v1/users/ban/{id}:
+    patch:
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      security:
+      - JWT: []
+      summary: disable user account
       tags:
       - user
   /auth/login:

@@ -31,7 +31,7 @@ func (rdb *Client) Set(ctx context.Context, key string, data any, exp time.Durat
 	}
 
 	if err = rdb.Client.Set(ctx, key, bytes, exp).Err(); err != nil {
-		return nil
+		return err
 	}
 	return nil
 }

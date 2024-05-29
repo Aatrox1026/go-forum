@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	l "kevinku/go-forum/lib/logger"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -29,5 +30,9 @@ func HandleResponse(ctx *gin.Context, statusCode int, data any) {
 		logger.Error(
 			"invalid status code",
 			zap.Int("code", statusCode))
+		ctx.AbortWithStatusJSON(
+			http.StatusInternalServerError,
+			Json{"msg": f("invalid status code: %d", statusCode)},
+		)
 	}
 }

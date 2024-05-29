@@ -84,6 +84,48 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/users/ban/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "disable user account",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "user id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/users/{id}": {
             "get": {
                 "security": [
@@ -97,7 +139,7 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "user sign up",
+                "summary": "get user by id",
                 "parameters": [
                     {
                         "type": "integer",
@@ -257,6 +299,9 @@ const docTemplate = `{
                 },
                 "email": {
                     "type": "string"
+                },
+                "enabled": {
+                    "type": "boolean"
                 },
                 "id": {
                     "type": "integer"

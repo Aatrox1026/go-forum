@@ -12,31 +12,31 @@ import (
 	"gorm.io/gorm"
 )
 
-func Register(registration *model.Registration) (code int, data Json, err error) {
+func Register(registration *model.Registration) (code int, id int64, err error) {
 	// check if username exists
 	var user *model.User = new(model.User)
 	if err = db.Where("name = ?", registration.Name).First(user).Error; err == nil {
 		// username already exists
 		logger.Info("username already exists", zap.String("username", registration.Name))
-		return http.StatusUnprocessableEntity, nil, errorf("username %s already exists", registration.Name)
+		return http.StatusUnprocessableEntity, -1, errorf("username %s already exists", registration.Name)
 	}
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		// other errors
 		logger.Error("get user failed", zap.Any("error", err))
-		return http.StatusBadRequest, nil, errorf("get user failed: %v", err)
+		return http.StatusBadRequest, -1, errorf("get user failed: %v", err)
 	}
 
 	// check if password matches confirm
 	if registration.Password != registration.Confirm {
 		logger.Error("confirm doesn't matches password")
-		return http.StatusBadRequest, nil, errorf("confirm doesn't matches password")
+		return http.StatusBadRequest, -1, errorf("confirm doesn't matches password")
 	}
 
 	// insert data to db
 	var hashed []byte
 	if hashed, err = bcrypt.GenerateFromPassword([]byte(registration.Password), 10); err != nil {
 		logger.Error("encrypt password failed", zap.Any("error", err))
-		return http.StatusBadRequest, nil, errorf("encrypt password failed: %v", err)
+		return http.StatusBadRequest, -1, errorf("encrypt password failed: %v", err)
 	}
 
 	user = &model.User{
@@ -49,10 +49,10 @@ func Register(registration *model.Registration) (code int, data Json, err error)
 
 	if err = db.Create(user).Error; err != nil {
 		logger.Error("create user failed", zap.Any("error", err))
-		return http.StatusBadRequest, nil, errorf("create user failed: %v", err)
+		return http.StatusBadRequest, -1, errorf("create user failed: %v", err)
 	}
 
-	return http.StatusCreated, Json{"id": user.ID}, nil
+	return http.StatusCreated, user.ID, nil
 }
 
 func Login(login *model.Login) (user *model.User, err error) {

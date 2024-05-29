@@ -23,7 +23,7 @@ import (
 func Register(ctx *gin.Context) {
 	var err error
 	var code int
-	var data Json
+	var id int64
 
 	var registration = new(model.Registration)
 	if err = ctx.ShouldBindJSON(registration); err != nil {
@@ -34,9 +34,9 @@ func Register(ctx *gin.Context) {
 		return
 	}
 
-	if code, data, err = service.Register(registration); err != nil {
+	if code, id, err = service.Register(registration); err != nil {
 		HandleResponse(ctx, code, err)
 		return
 	}
-	HandleResponse(ctx, code, data)
+	HandleResponse(ctx, code, Json{"id": id})
 }

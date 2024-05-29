@@ -1,7 +1,8 @@
 package controller
 
 import (
-	"kevinku/go-forum/middleware"
+	"log"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,5 +16,12 @@ import (
 // @Failure 400 {object} string
 // @Router /api/v1/test [get]
 func Test() gin.HandlerFunc {
-	return middleware.PermissionCheck(1)
+	return func(ctx *gin.Context) {
+		go func() {
+			time.Sleep(5 * time.Second)
+			log.Println("second delete")
+		}()
+		log.Println("first delete")
+		ctx.JSON(200, "success")
+	}
 }

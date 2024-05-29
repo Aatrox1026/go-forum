@@ -29,6 +29,8 @@ func Route(ginServer *gin.Engine) {
 			{
 				user.GET("", middleware.PermissionCheck(model.ROLE_ADMINISTRATOR), controller.GetUsers)
 				user.GET("/:id", controller.GetUserByID)
+
+				user.PATCH("/ban/:id", middleware.PermissionCheck(model.ROLE_MANAGER), controller.BanUser)
 			}
 		}
 	}
